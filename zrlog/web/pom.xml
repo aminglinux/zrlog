@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>zrlog</artifactId>
+        <groupId>com.zrlog</groupId>
+        <version>2.1.8-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>web</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <tomcat7Version>9.0.30</tomcat7Version>
+        <tomcat-scope>compile</tomcat-scope>
+        <contextPath>/${finalName}</contextPath>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.zrlog</groupId>
+            <artifactId>service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jfinal</groupId>
+            <artifactId>cos</artifactId>
+            <version>2019.8</version>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.htmlcleaner</groupId>
+            <artifactId>htmlcleaner</artifactId>
+            <version>2.21</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.23</version>
+        </dependency>
+
+
+        <!--tomcat embed mode-->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat7Version}</version>
+            <scope>${tomcat-scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <version>${tomcat7Version}</version>
+            <scope>${tomcat-scope}</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${finalName}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <port>8080</port>
+                    <path>${contextPath}</path>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <resourceEncoding>${project.build.sourceEncoding}</resourceEncoding>
+                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <recompressZippedFiles>true</recompressZippedFiles>
+                    <packagingExcludes>
+                        WEB-INF/classes/rebel.xml,
+                        WEB-INF/classes/com/zrlog/web/Application.class,
+                        include/templates/.idea/**,
+                        include/templates/*.zip,
+                        attached/**,
+                        WEB-INF/plugins/**,
+                        WEB-INF/update-temp/**,
+                        WEB-INF/lib/tomcat*,
+                        WEB-INF/lib/ecj*,
+                        post/**
+                        _cache/**
+                    </packagingExcludes>
+                    <outputDirectory>${project.build.directory}/../../target</outputDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <recompressZippedFiles>true</recompressZippedFiles>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.zrlog.web.Application</mainClass>
+                        </manifest>
+                    </archive>
+                    <finalName>zrlog</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <outputDirectory>${project.build.directory}/../../target/</outputDirectory>
+                </configuration>
+
+            </plugin>
+        </plugins>
+    </build>
+</project>
